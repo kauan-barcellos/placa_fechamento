@@ -41,5 +41,7 @@ Desktop.ini
 !*.kicad_pcb
 !*.kicad_dru
 !GEMINI.md
+!AGENTS.md
 !README.md
+!PROJECT_MEMORY.md
 !**/.gitkeep

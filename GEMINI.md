@@ -6,6 +6,31 @@ Ele foi estruturado com parâmetros explícitos para consumo humano e execução
 
 ---
 
+## 0. Protocolo de Ação Autônoma e Consulta Prévia Obrigatória
+
+Toda e qualquer ação, resposta ou execução de ferramenta neste repositório DEVE OBRIGATORIAMENTE seguir as seguintes diretrizes ativas de forma autônoma, sem necessidade de lembrete pelo usuário:
+
+1. **Consulta e Atualização da Memória Persistente ([PROJECT_MEMORY.md](file:///C:/Projetos_PCB/Novo_Projeto/PROJECT_MEMORY.md)):**
+   - **Antes de qualquer ação:** O agente consulta [PROJECT_MEMORY.md](file:///C:/Projetos_PCB/Novo_Projeto/PROJECT_MEMORY.md) para verificar trilhos de alimentação, pinos do MCU já alocados, componentes selecionados e histórico de decisões.
+   - **Após qualquer alteração:** O agente atualiza imediatamente [PROJECT_MEMORY.md](file:///C:/Projetos_PCB/Novo_Projeto/PROJECT_MEMORY.md) com os novos dados de hardware (BOM, pinout, regras específicas).
+
+2. **Execução Especializada via Skill [`kicad10-pcb-designer`](file:///C:/Projetos_PCB/Novo_Projeto/.agents/skills/kicad10-pcb-designer/SKILL.md):**
+   - Toda manipulação de esquemático ou layout no KiCad deve seguir os procedimentos da skill: operações em lote (*batch*), preferência mandatória por componentes *Basic Parts* da JLCPCB/LCSC, desacoplamento a menos de 2.0 mm, proteção ESD in-line na entrada e planos contínuos em `B.Cu`.
+
+3. **Eficiência de Contexto via Skill [`token-optimization`](file:///C:/Projetos_PCB/Novo_Projeto/.agents/skills/token-optimization/SKILL.md):**
+   - Proibido imprimir arquivos inteiros no chat; usar links diretos (`file:///...`) e exibir apenas diffs mínimos.
+   - Relatórios de DRC/ERC devem ser resumidos por categoria/severidade em vez de despejar logs brutos.
+   - Agrupamento de ações para minimizar turnos e requisições repetidas.
+
+4. **Linguagem Humanizada e Tom Técnico ([`communication-and-tokens.md`](file:///C:/Projetos_PCB/Novo_Projeto/.agents/rules/communication-and-tokens.md) e Skill `humanizer`):**
+   - Comunicação estritamente direta de engenheiro para engenheiro.
+   - Banimento total de vícios e clichês de IA ("mergulhar", "alavancar", "orquestrar", "ecossistema", introduções teatrais, superlativos vazios).
+
+5. **Autonomia de Validação (Zero Violações):**
+   - O agente NUNCA deve solicitar confirmação para rodar validações: deve executar autonomamente `run_erc` a cada bloco do esquemático e `run_drc` a cada fase da PCB, resolvendo 100% dos erros/violações antes de entregar o resultado.
+
+---
+
 ## 1. Tabela de Especificações DFM JLCPCB (2 Camadas - 1 oz / 35 µm Cu)
 
 A tabela abaixo define os limites absolutos do fabricante e os valores de projeto recomendados (*Safe Production Values*). Todas as regras de design no KiCad devem adotar os **Valores Recomendados**.
