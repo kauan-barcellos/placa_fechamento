@@ -144,7 +144,30 @@ A ferramenta do KiCad MCP deve ser configurada e executada com a seguinte estrat
 
 ---
 
-## 7. Fluxo Obrigatório de Validação Incremental (Zero Violações)
+## 7. Diretrizes Específicas por Subcircuito
+
+### 7.1. Fontes Chaveadas (DC-DC Buck / Boost)
+- **Loop de Alta Corrente ($C_{in} \to SW \to L \to C_{out}$):** Manter o mais compacto possível na mesma camada (`F.Cu`), minimizando a área de espira radiante.
+- **Nó de Chaveamento ($SW$ / $LX$):** Cobre largo para conduzir corrente, porém de menor área possível para diminuir capacitância parasita e emissão de ruído de alta frequência ($dV/dt$).
+- **Trilha de Feedback ($FB$):** Trilha fina e curta, fisicamente isolada do nó de comutação e do indutor. O divisor resistivo deve ficar imediatamente adjacente ao pino FB do CI.
+
+### 7.2. Reguladores Lineares (LDO)
+- **Capacitores de Entrada e Saída:** Conectar imediatamente aos pinos $V_{IN}$ e $V_{OUT}$ com terra ligado ao mesmo ponto de referência.
+- **Dissipação Térmica:** Inserir vias térmicas no pad de terra/exposto conectado ao plano de terra inferior para escoamento de calor.
+
+### 7.3. Osciladores e Cristais (HSE / LSE)
+- **Localização:** Máximo de $5\text{ mm}$ dos pinos do microcontrolador.
+- **Anel de Guarda (*Guard Ring*):** Envolver os pinos do cristal com trilha de terra conectada ao plano por vias.
+- **Isolamento de Camada:** NUNCA passar trilhas de sinal rápido, PWM ou potência embaixo do cristal em qualquer camada.
+
+### 7.4. Barramentos e Entradas Externas
+- **I2C:** Resistores de pull-up (2.2k a 4.7k) próximos ao mestre; sinais SDA/SCL roteados lado a lado.
+- **SPI:** Linha de relógio (SCK) roteada com folga 3W; opcionalmente resistor de amortecimento série (22R a 33R) para evitar *ringing*.
+- **Entradas Digitais / Sensores Externos:** Filtro RC passa-baixa (*hardware debounce*), resistor de pull-up/down e proteção de sobretensão (clamp diode / TVS).
+
+---
+
+## 8. Fluxo de Trabalho Automatizado e Validação Incremental (Zero Violações)
 
 Todo o fluxo de desenvolvimento pelo agente e ferramentas de automação deve seguir estritamente o seguinte pipeline:
 
@@ -164,7 +187,24 @@ Todo o fluxo de desenvolvimento pelo agente e ferramentas de automação deve se
                           [Exportar Gerbers/BOM]
 ```
 
-1. **Validação Elétrica (`run_erc`):**
-   - Executada a cada bloco do esquemático finalizado. Não é permitido avançar para o layout de PCB enquanto houver qualquer erro ou aviso pendente no ERC.
-2. **Validação de Regras de Design (`run_drc`):**
-   - Executada a cada etapa de roteamento e inserção de planos. Toda violação de espaçamento, furos não conectados, colisões de *courtyard* ou anel anular insuficiente deve ser resolvida imediatamente até que o DRC retorne 0 violações.
+### 8.1. Receita MCP para Esquemático
+1. Adicionar componentes com propriedades completas: `add_schematic_component`, `set_schematic_component_property`.
+2. Conectar pinos e criar labels: `add_schematic_wire`, `add_schematic_net_label`.
+3. Pinos não utilizados recebem `add_no_connect`.
+4. Trilhos de alimentação derivados recebem `PWR_FLAG`.
+5. Validação mandatória: `run_erc` — deve retornar 0 erros e 0 avisos.
+
+### 8.2. Receita MCP para PCB
+1. Sincronizar: `create_board_from_schematic` ou `sync_schematic_to_board`.
+2. Definir contorno e regras: `add_board_outline`, `set_design_rules`, `create_netclass`.
+3. Inserir furos de montagem e fiducials: `add_mounting_hole`.
+4. Posicionamento estratégico: `place_component` respeitando distâncias de desacoplamento (< 2mm).
+5. Roteamento: `route_trace` (45°), `route_differential_pair`.
+6. Planos de cobre: `add_copper_pour` (F.Cu e B.Cu aterrados).
+7. Costura de vias: `add_gnd_stitching_vias`.
+8. Validação mandatória: `run_drc` — deve retornar 0 violações.
+
+### 8.3. Receita MCP para Fabricação
+1. Gerbers e Furações: `export_gerbers`, `export_drill`.
+2. Montagem JLCPCB: `export_pos` (CPL), `export_bom`.
+3. Documentação: `export_sch_pdf`, `export_pcb_pdf`.
