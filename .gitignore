@@ -1,0 +1,48 @@
+# ==========================================
+# KiCad Git Ignore Rules
+# ==========================================
+
+# Arquivos temporários e backups
+*.bak
+*.kicad_pcb-bak
+*.kicad_sch-bak
+*-bak
+*~
+_autosave-*
+*.tmp
+*-save.pro
+*-save.kicad_pcb
+fp-info-cache
+
+# Configurações locais de usuário do KiCad (layout de janelas, zoom, etc.)
+*.kicad_prl
+
+# Diretório de backup automático do KiCad
+.kicad-backup/
+
+# Travas e arquivos transitórios
+*.lck
+*.000
+
+# Pastas de saída de fabricação e relatórios temporários
+/gerber/
+/gerbers/
+/production/
+/fab/
+/plots/
+/drc/
+/erc/
+
+# Arquivos do Sistema Operacional
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# ==========================================
+# Manter explicitamente arquivos essenciais
+# ==========================================
+!*.kicad_pro
+!*.kicad_sch
+!*.kicad_pcb
+!*.kicad_dru
+!GEMINI.md
