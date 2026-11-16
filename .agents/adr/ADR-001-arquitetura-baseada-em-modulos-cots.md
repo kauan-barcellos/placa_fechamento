@@ -34,13 +34,14 @@ O usuário estabeleceu a regra mandatória de simplificar o desenvolvimento util
 ## 3. Decisão Escolhida e Justificativa
 
 **Aprovada a Opção B.**
-A placa `placa_fechamento` será projetada como uma **Carrier Board**.
-O esquemático e layout do KiCad utilizarão pinagens/footprints de barras de pinos fêmea ou macho (passo padrão 2.54 mm) dimensionadas para acomodar o encaixe dos módulos comerciais especificados pelo usuário.
+A placa `placa_fechamento` será projetada como uma **Carrier Board de Alta Densidade / Ultracompacta**.
+- O esquemático e layout do KiCad utilizarão barras de pinos (passo 2.54 mm) para encaixe dos módulos comerciais definidos para o projeto, e bornes a parafuso (KRE) para fiação externa.
+- A meta de layout é **a máxima compacidade física viável**, agrupando os módulos e bornes de forma eficiente, sem comprometer folgas elétricas, dissipação térmica (IPC-2152) e continuidade do plano de terra em `B.Cu`.
 
 ---
 
 ## 4. Consequências no Layout e Esquemático
 
-1. **Esquemático KiCad:** Símbolos de conectores/pin headers com rótulos semânticos claros correspondentes aos pinos do módulo (ex: `IN+`, `IN-`, `OUT+`, `OUT-` para o LM2596; `VCC`, `GND`, `SDA`, `SCL`, `OUT` para o MCP4725).
-2. **Layout KiCad:** Footprints padronizados de barras de pinos (`Connector_PinHeader_2.54mm`) com espaçamento físico exato entre fileiras correspondente à geometria real dos módulos.
+1. **Esquemático KiCad:** Símbolos de conectores/pin headers com rótulos semânticos claros correspondentes aos pinos dos módulos que forem definidos pelo usuário.
+2. **Layout KiCad:** Footprints padronizados de barras de pinos (`Connector_PinHeader_2.54mm`) com espaçamento físico exato entre fileiras e arranjo espacial compacto.
 3. **Robustez:** A Carrier Board cuidará das conexões externas (bornes a parafuso KRE para chicotes elétricos de campo, fusíveis de proteção na entrada e trilhas de potência reforçadas).

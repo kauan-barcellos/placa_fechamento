@@ -16,16 +16,12 @@ Este documento mantém o estado vivo do hardware, decisões técnicas, component
 ## 2. Decisões de Arquitetura de Hardware
 *(Esta seção é atualizada continuamente à medida que definimos o circuito)*
 
-- **Filosofia de Arquitetura (Regra de Ouro):** **Carrier Board Baseada em Módulos Prontos (COTS)**. A placa atua como placa-mãe de interconexão; circuitos de potência, regulação, DAC e comunicação são integrados através de barras de pinos / soquetes fêmea de 2.54 mm para módulos pré-montados de mercado (Ref: [ADR-001](.agents/adr/ADR-001-arquitetura-baseada-em-modulos-cots.md)).
-- **Trilhos de Alimentação (Power Rails):**
-  - Módulo Regulador Step-Down (ex: Módulo LM2596 para converter tensão externa para 5V/3.3V).
-- **Microcontrolador / Processador:**
-  - Módulo / Placa de desenvolvimento com pinagem em barra de pinos (ex: ESP32 DevKit, BluePill STM32 ou compatível).
-- **Interfaces e Barramentos:**
-  - Conversor DAC: Módulo MCP4725 (comunicação I2C).
-  - Comunicação Industrial: Módulo MAX485 (comunicação RS485).
-- **Entradas e Saídas (I/O):**
-  - Conexões externas via bornes parafuso KRE para chicotes de campo.
+- **Filosofia de Arquitetura (Regra de Ouro):** **Carrier Board Ultracompacta para Módulos COTS**. A placa atua como placa-mãe de interconexão compacta, utilizando barras de pinos (2.54 mm) para encaixe de módulos comerciais pré-montados e bornes a parafuso (KRE) para fiação externa de campo (Ref: [ADR-001](.agents/adr/ADR-001-arquitetura-baseada-em-modulos-cots.md)).
+- **Meta de Fator de Forma:** **Máxima Compacidade Possível**, agrupando os módulos e bornes de forma densa e organizada, sem comprometer a eficiência elétrica (regras IPC-2152 de corrente, isolamento térmico e plano de terra contínuo em `B.Cu`).
+- **Módulos do Circuito:** *A definir com base na função específica da placa de fechamento.*
+- **Trilhos de Alimentação (Power Rails):** *A definir conforme requisitos dos módulos e atuadores.*
+- **Microcontrolador / Processador:** *A definir.*
+- **Entradas e Saídas (I/O):** Bornes a parafuso KRE para conexão externa de alimentação, sensores e atuadores.
 
 ---
 
@@ -44,7 +40,7 @@ Este documento mantém o estado vivo do hardware, decisões técnicas, component
 
 ## 5. Preferências e Restrições Registradas pelo Usuário
 - **DFM:** Padrão JLCPCB 2 camadas estrito (traço mín 0.15mm, furo via 0.3mm / pad 0.6mm).
-- **Arquitetura de Módulos Prontos:** Mandatório adotar soquetes/headers para módulos comerciais pré-montados (LM2596, MCP4725, MAX485, etc.), eliminando circuitos discretos complexos.
+- **Arquitetura de Módulos Prontos & Alta Compacidade:** Mandatório adotar barras de pinos/soquetes para módulos comerciais pré-montados (COTS), bornes a parafuso para chicotes externos e buscar a máxima compacidade física da PCB, garantindo integridade térmica (IPC-2152) e plano de terra contínuo em `B.Cu`.
 - **Validação:** ERC e DRC com 0 erros/violações mandatórios antes de qualquer commit/avanço.
 - **Voz e Comunicação:** Peer-to-peer técnico, sem subserviência, sem rodeios ou clichês de IA.
 - **Formato BLUF:** Resumo/conclusão na primeira linha, seguido de detalhamento conciso e próximas ações.
