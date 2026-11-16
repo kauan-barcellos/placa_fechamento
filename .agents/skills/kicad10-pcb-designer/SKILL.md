@@ -30,14 +30,37 @@ Este guia operacional orienta a execução precisa e econômica de tarefas no Ki
 
 ## 2. Seleção Inteligente de Componentes (JLCPCB PCBA)
 
-1. **Catálogo JLCPCB / LCSC:**
-   - Priorize componentes da categoria **Basic Parts** da JLCPCB. Eles não geram taxa de troca de carretel ($3.00/linha) e estão sempre em estoque.
-   - Componentes passivos comuns (resistores 0603 1%, capacitores cerâmicos 0603 100nF, 10uF) e diodos (1N4148, SS34) possuem códigos LCSC Basic padronizados.
+1. **Busca na Base Local JLCPCB (513.000 componentes offline):**
+   - Utilize `search_jlcpcb_parts` para consultar estoque e preços reais instantaneamente sem requisições HTTP externas lentas.
+   - Priorize componentes da categoria **Basic Parts** da JLCPCB (`library_type: "Basic"`). Eles não geram taxa de troca de carretel ($3.00/linha) e estão sempre em estoque.
    - Sempre preencha a propriedade `LCSC Part #` no símbolo esquemático usando `set_schematic_component_property`.
 
-2. **Desacoplamento e Conexão:**
+2. **Componentes Incomuns / 3D Bundles:**
+   - Para partes sem modelo oficial no KiCad (ex: conectores USB-C específicos, sensores raros), consulte `search_parts_registry` e use `download_registry_part` para importar o bundle com símbolo, pegada e modelo 3D.
+
+3. **Desacoplamento e Conexão:**
    - Cada pino VDD/VCC do MCU ou CI deve ter um capacitor cerâmico de 100 nF a menos de 2.0 mm no layout.
    - Conecte o capacitor na topologia *flow-through*: a trilha de alimentação atinge o pad do capacitor antes de entrar no CI.
+
+---
+
+## 3. Autoroteamento de Sinais Secundários (FreeRouting)
+
+1. **Roteamento Manual Prioritário:** Trilhas de alimentação grossas (0.5 mm a 1.0 mm), diodos TVS na entrada do conector, oscilador/cristal com guard ring e pares diferenciais (USB / RS485) são **sempre roteados manualmente** primeiro.
+2. **Autoroteamento em Lote:** Para barramentos secundários densos de GPIOs, LEDs e linhas de controle não críticas, exporte a malha e acione o FreeRouting via `autoroute`.
+3. **Pós-Autoroteamento:** Executar `refill_zones` e `run_drc` para certificar que nenhuma regra DFM de clearance (0.15 mm) foi violada.
+
+---
+
+## 4. Inspeção Visual Automática no Chat
+
+- Após cada avanço estrutural no esquemático ou no layout, execute o script:
+  `python .agents/scripts/generate_previews.py`
+- Esse script gera arquivos vetoriais em `docs/previews/`:
+  - [pcb_top.svg](file:///C:/Projetos_PCB/Novo_Projeto/docs/previews/pcb_top.svg)
+  - [pcb_bottom.svg](file:///C:/Projetos_PCB/Novo_Projeto/docs/previews/pcb_bottom.svg)
+  - [schematic.svg](file:///C:/Projetos_PCB/Novo_Projeto/docs/previews/schematic.svg)
+- Forneça os links diretos para que o usuário possa inspecionar visualmente a placa sem abrir o KiCad.
 
 ---
 
