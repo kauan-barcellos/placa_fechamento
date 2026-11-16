@@ -56,3 +56,17 @@ Este documento mantém o estado vivo do hardware, decisões técnicas, component
 ## 6. Histórico de Lições Aprendidas e Soluções DRC/ERC
 - **Headless CLI vs GUI (Task 450):** Nunca importar módulos gráficos do KiCad (`pcbnew`) diretamente em scripts headless sem GUI; usar exclusivamente `kicad-cli.exe` com timeout de 15s para evitar diálogos invisíveis de asserção wxWidgets (`assert PgmOrNull`).
 - **Orçamento de Regras (Rule Budget):** Manter `GEMINI.md` estritamente focado em parâmetros DFM numéricos (~5 KB) e delegar procedimentos extensos para a skill sob demanda `kicad10-pcb-designer`.
+
+---
+
+## 7. Catálogo de Skills Modulares Ativas (.agents/skills)
+1. `kicad10-pcb-designer`: Procedimentos avançados KiCad MCP, heurísticas de layout e exportação JLCPCB.
+2. `kicad-regime-classifier`: Classificação física e térmica de nets (IPC-2152, alta velocidade, analógico, potência).
+3. `embedded-pinout-planner`: Validação de funções alternativas de MCU e prevenção de conflitos de strapping pins.
+4. `bom-lifecycle-auditor`: Auditoria contra base SQLite JLCPCB de 513k peças e priorização de Basic Parts.
+5. `systematic-debugging`: Protocolo determinístico em 4 fases para investigar causa raiz de falhas ERC/DRC.
+6. `evidence-backed-verification`: Validação mandatória de 0 erros/violações e previews antes da entrega.
+7. `hardware-adr`: Registros formais de decisões de arquitetura de circuito em `.agents/adr/`.
+8. `git-hygiene-and-secrets`: Filtragem de arquivos temporários do KiCad e proteção contra vazamento de chaves.
+9. `agent-memory`: Padrão de memória persistente viva para hardware.
+10. `token-optimization`: Técnicas de economia de contexto e supressão de ruído de ferramentas.
