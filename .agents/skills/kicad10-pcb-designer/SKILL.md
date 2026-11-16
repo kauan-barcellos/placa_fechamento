@@ -95,7 +95,26 @@ Este guia operacional orienta a execução precisa e econômica de tarefas no Ki
 
 ---
 
-## 5. Procedimento de Finalização e Exportação
+## 6. Diretrizes Específicas por Subcircuito
+
+1. **Fontes Chaveadas (DC-DC Buck/Boost):**
+   - Loop de alta corrente ($C_{in} \to SW \to L \to C_{out}$) ultra-compacto em `F.Cu`.
+   - Nó de chaveamento ($SW$) com área mínima para conter emissão $dV/dt$.
+   - Trilha de Feedback ($FB$) fina, curta e distante do indutor.
+2. **Reguladores Lineares (LDO):**
+   - Capacitores de entrada e saída colados nos pinos $V_{IN}$ e $V_{OUT}$ com vias térmicas no plano de terra.
+3. **Osciladores e Cristais (HSE/LSE):**
+   - Máximo de 5 mm dos pinos do MCU; anel de guarda aterrado; proibido passar trilhas de sinal sob o cristal.
+4. **Proteção ESD e TVS:**
+   - Diodos TVS na entrada imediata do conector com roteamento *in-line flow-through* (sem stubs) e no mínimo 2 vias de terra.
+5. **Barramentos e I/O:**
+   - I2C: Pull-ups (2.2k a 4.7k) próximos ao mestre; trilhas SDA/SCL pareadas.
+   - SPI: Trilha de clock (SCK) com folga 3W; resistor amortecedor série de 22R a 33R.
+   - Entradas Digitais: Filtro RC (debounce de hardware) + clamp diode/TVS.
+
+---
+
+## 7. Procedimento de Finalização e Exportação
 
 1. Executar `refill_zones` para preencher os planos de cobre `F.Cu` e `B.Cu`.
 2. Executar `save_board(force: true)`.

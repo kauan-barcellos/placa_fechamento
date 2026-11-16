@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
 """
 Gera automaticamente arquivos de preview visual da PCB e do Esquemático
-para inspeção rápida no navegador e no chat.
+utilizando estritamente a CLI nativa (kicad-cli) com timeouts rigidos.
+NUNCA importa modulos graficos ou GUI do KiCad (elimina assert PgmOrNull).
 """
 
 import os
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -13,52 +15,90 @@ WORKSPACE = Path(__file__).resolve().parents[2]
 DOCS_PREVIEWS = WORKSPACE / "docs" / "previews"
 DOCS_PREVIEWS.mkdir(parents=True, exist_ok=True)
 
-KICAD_CLI = r"C:\Users\kauam.barcellos\AppData\Local\Programs\KiCad\10.0\bin\kicad-cli.exe"
+DEFAULT_TIMEOUT_SEC = 15
+
+def find_kicad_cli():
+    # 1. PATH do sistema
+    cmd = shutil.which("kicad-cli")
+    if cmd:
+        return cmd
+
+    # 2. Caminhos padrao no Windows
+    candidates = [
+        r"C:\Users\kauam.barcellos\AppData\Local\Programs\KiCad\10.0\bin\kicad-cli.exe",
+        r"C:\Program Files\KiCad\10.0\bin\kicad-cli.exe",
+        r"C:\Program Files\KiCad\9.0\bin\kicad-cli.exe",
+        r"C:\Program Files\KiCad\8.0\bin\kicad-cli.exe",
+    ]
+    for path in candidates:
+        if os.path.isfile(path):
+            return path
+    return None
+
+KICAD_CLI = find_kicad_cli()
 BOARD_FILE = WORKSPACE / "placa_fechamento.kicad_pcb"
 SCH_FILE = WORKSPACE / "placa_fechamento.kicad_sch"
 
-def run_cmd(cmd, desc):
+def run_headless_cmd(cmd, desc, timeout_sec=DEFAULT_TIMEOUT_SEC):
     try:
-        res = subprocess.run(cmd, capture_output=True, text=True)
+        res = subprocess.run(
+            cmd,
+            capture_output=True,
+            text=True,
+            timeout=timeout_sec,
+            encoding="utf-8",
+            errors="replace"
+        )
         if res.returncode == 0:
             print(f"[OK] {desc}")
             return True
         else:
-            print(f"[AVISO] {desc} falhou: {res.stderr[:200]}")
+            err = res.stderr.strip()[:300] if res.stderr else res.stdout.strip()[:300]
+            print(f"[AVISO] {desc} falhou (codigo {res.returncode}): {err}")
             return False
+    except subprocess.TimeoutExpired:
+        print(f"[ERRO] Timeout ({timeout_sec}s) expirado para: {desc}. Processo cancelado.")
+        return False
     except Exception as exc:
-        print(f"[ERRO] {desc}: {exc}")
+        print(f"[ERRO] Falha ao executar {desc}: {exc}")
         return False
 
-def generate_svgs():
-    if not os.path.isfile(KICAD_CLI):
-        print(f"[ERRO] kicad-cli nao encontrado em: {KICAD_CLI}")
-        return
+def generate_svg_previews():
+    if not KICAD_CLI or not os.path.isfile(KICAD_CLI):
+        print(f"[ERRO] kicad-cli nao localizado para renderizacao.")
+        return False
 
-    # 1. Esquemático
-    if SCH_FILE.is_file():
-        out_sch = DOCS_PREVIEWS / "schematic.svg"
-        run_cmd([
+    success = True
+
+    # 1. Preview do Esquemático
+    if SCH_FILE.is_file() and SCH_FILE.stat().st_size > 0:
+        sch_out_dir = DOCS_PREVIEWS / "schematic"
+        sch_out_dir.mkdir(parents=True, exist_ok=True)
+        cmd = [
             KICAD_CLI, "sch", "export", "svg",
-            "-o", str(out_sch),
+            "-o", str(sch_out_dir),
             str(SCH_FILE)
-        ], "Exportacao SVG do Esquetamico")
+        ]
+        if not run_headless_cmd(cmd, "SVG do Esquematico"):
+            success = False
 
-    # 2. PCB Top Layer
-    if BOARD_FILE.is_file():
+    # 2. Preview da PCB - Camada Superior (Top)
+    if BOARD_FILE.is_file() and BOARD_FILE.stat().st_size > 0:
         out_top = DOCS_PREVIEWS / "pcb_top.svg"
-        run_cmd([
+        cmd_top = [
             KICAD_CLI, "pcb", "export", "svg",
             "-o", str(out_top),
             "--layers", "F.Cu,F.Silkscreen,F.Mask,Edge.Cuts",
             "--fit-page-to-board",
             "--exclude-drawing-sheet",
             str(BOARD_FILE)
-        ], "Exportacao SVG da PCB (Top)")
+        ]
+        if not run_headless_cmd(cmd_top, "SVG da PCB (F.Cu)"):
+            success = False
 
-        # 3. PCB Bottom Layer
+        # 3. Preview da PCB - Camada Inferior (Bottom)
         out_bot = DOCS_PREVIEWS / "pcb_bottom.svg"
-        run_cmd([
+        cmd_bot = [
             KICAD_CLI, "pcb", "export", "svg",
             "-o", str(out_bot),
             "--layers", "B.Cu,B.Silkscreen,B.Mask,Edge.Cuts",
@@ -66,27 +106,19 @@ def generate_svgs():
             "--exclude-drawing-sheet",
             "--mirror",
             str(BOARD_FILE)
-        ], "Exportacao SVG da PCB (Bottom)")
-
-def generate_ibom():
-    try:
-        from InteractiveHtmlBom.generate_interactive_bom import main as ibom_main
-        sys.argv = [
-            "generate_interactive_bom",
-            "--dest-dir", str(DOCS_PREVIEWS),
-            "--name-format", "ibom",
-            "--no-browser",
-            str(BOARD_FILE)
         ]
-        ibom_main()
-        print("[OK] InteractiveHtmlBom gerado em docs/previews/ibom.html")
-    except Exception as exc:
-        print(f"[INFO] iBOM: {exc}")
+        if not run_headless_cmd(cmd_bot, "SVG da PCB (B.Cu)"):
+            success = False
+
+    return success
 
 if __name__ == "__main__":
     print("=" * 60)
-    print("Gerando previews visuais da placa...")
+    print("Executando renderizacao visual headless (kicad-cli)...")
+    print(f"Diretorio de saida: {DOCS_PREVIEWS}")
     print("=" * 60)
-    generate_svgs()
-    generate_ibom()
-    print("Previews concluidos em:", DOCS_PREVIEWS)
+    ok = generate_svg_previews()
+    if ok:
+        print("[SUCESSO] Previews gerados com seguranca (sem travas de GUI).")
+    else:
+        print("[CONCLUIDO COM AVISOS] Verifique as mensagens acima.")

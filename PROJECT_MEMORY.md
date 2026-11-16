@@ -49,9 +49,10 @@ Este documento mantém o estado vivo do hardware, decisões técnicas, component
 - **Autonomia Operacional:** Execução silenciosa de checagens não destrutivas (ERC, DRC, previews), autodiagnóstico via `diagnostico.bat` e commits semânticos atômicos.
 - **Rollback de Segurança:** Rollback automático (`circuit_checkpoint.py --rollback`) caso o ERC/DRC não convirja em 2 tentativas.
 - **Commits em pt-BR:** Todas as mensagens de commit DEVEM ser escritas em português do Brasil (`pt-BR`) no padrão Conventional Commits (`feat(escopo): descrição`). Proibido commits em inglês.
-- **Economia de Tokens & Subagentes:** Diffs pontuais, links clicáveis `file:///...`, supressão de logs de sucesso verbosos, subagentes com modelo `flash` para pesquisas de catálogo/datasheet e indicação proativa de `/compact`.
+- **Economia de Tokens & Subagentes:** Diffs pontuais, links clicáveis `file:///...`, supressão de logs de sucesso verbosos, subagentes com modelo `flash` para pesquisas de catálogo/datasheet, GEMINI.md enxuto (5.2 KB) e indicação proativa de `/compact`.
 
 ---
 
 ## 6. Histórico de Lições Aprendidas e Soluções DRC/ERC
-- *Anotações sobre eventuais conflitos resolvidos serão salvas aqui para evitar reincidência.*
+- **Headless CLI vs GUI (Task 450):** Nunca importar módulos gráficos do KiCad (`pcbnew`) diretamente em scripts headless sem GUI; usar exclusivamente `kicad-cli.exe` com timeout de 15s para evitar diálogos invisíveis de asserção wxWidgets (`assert PgmOrNull`).
+- **Orçamento de Regras (Rule Budget):** Manter `GEMINI.md` estritamente focado em parâmetros DFM numéricos (~5 KB) e delegar procedimentos extensos para a skill sob demanda `kicad10-pcb-designer`.

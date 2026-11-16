@@ -1,62 +1,33 @@
-# Diretrizes de Engenharia de Hardware, DFM e Layout KiCad 10.0 (Padrão JLCPCB 2 Camadas)
+# Regras DFM e Especificações de Layout KiCad 10.0 (JLCPCB 2 Camadas)
 
-Este documento estabelece as diretrizes técnicas, padrões de engenharia eletrônica, regras de **Design for Manufacturing (DFM)** e **Design for Assembly (DFA)** para fabricação na **JLCPCB (2 camadas)**.
-
-Ele foi estruturado com parâmetros explícitos para consumo humano e execução programática automatizada via ferramentas do **KiCad MCP Server**.
+Este documento define os parâmetros numéricos e regras obrigatórias de **Design for Manufacturing (DFM)** para fabricação na **JLCPCB (2 Camadas, 1 oz / 35 µm Cu, FR-4 1.6 mm)**.
 
 ---
 
-## 0. Protocolo de Ação Autônoma e Consulta Prévia Obrigatória
+## 1. Tabela DFM JLCPCB (Safe Production Values)
 
-Toda e qualquer ação, resposta ou execução de ferramenta neste repositório DEVE OBRIGATORIAMENTE seguir as seguintes diretrizes ativas de forma autônoma, sem necessidade de lembrete pelo usuário:
+Todas as regras de design no KiCad devem adotar os **Valores Recomendados**.
 
-1. **Consulta e Atualização da Memória Persistente ([PROJECT_MEMORY.md](file:///C:/Projetos_PCB/Novo_Projeto/PROJECT_MEMORY.md)):**
-   - **Antes de qualquer ação:** O agente consulta [PROJECT_MEMORY.md](file:///C:/Projetos_PCB/Novo_Projeto/PROJECT_MEMORY.md) para verificar trilhos de alimentação, pinos do MCU já alocados, componentes selecionados e histórico de decisões.
-   - **Após qualquer alteração:** O agente atualiza imediatamente [PROJECT_MEMORY.md](file:///C:/Projetos_PCB/Novo_Projeto/PROJECT_MEMORY.md) com os novos dados de hardware (BOM, pinout, regras específicas).
-
-2. **Execução Especializada via Skill [`kicad10-pcb-designer`](file:///C:/Projetos_PCB/Novo_Projeto/.agents/skills/kicad10-pcb-designer/SKILL.md):**
-   - Toda manipulação de esquemático ou layout no KiCad deve seguir os procedimentos da skill: operações em lote (*batch*), preferência mandatória por componentes *Basic Parts* da JLCPCB/LCSC, desacoplamento a menos de 2.0 mm, proteção ESD in-line na entrada e planos contínuos em `B.Cu`.
-
-3. **Eficiência de Contexto via Skill [`token-optimization`](file:///C:/Projetos_PCB/Novo_Projeto/.agents/skills/token-optimization/SKILL.md):**
-   - Proibido imprimir arquivos inteiros no chat; usar links diretos (`file:///...`) e exibir apenas diffs mínimos.
-   - Relatórios de DRC/ERC devem ser resumidos por categoria/severidade em vez de despejar logs brutos.
-   - Agrupamento de ações para minimizar turnos e requisições repetidas.
-
-4. **Linguagem Humanizada e Tom Técnico ([`communication-and-tokens.md`](file:///C:/Projetos_PCB/Novo_Projeto/.agents/rules/communication-and-tokens.md) e Skill `humanizer`):**
-   - Comunicação estritamente direta de engenheiro para engenheiro.
-   - Banimento total de vícios e clichês de IA ("mergulhar", "alavancar", "orquestrar", "ecossistema", introduções teatrais, superlativos vazios).
-
-5. **Autonomia de Validação (Zero Violações):**
-   - O agente NUNCA deve solicitar confirmação para rodar validações: deve executar autonomamente `run_erc` a cada bloco do esquemático e `run_drc` a cada fase da PCB, resolvendo 100% dos erros/violações antes de entregar o resultado.
-
----
-
-## 1. Tabela de Especificações DFM JLCPCB (2 Camadas - 1 oz / 35 µm Cu)
-
-A tabela abaixo define os limites absolutos do fabricante e os valores de projeto recomendados (*Safe Production Values*). Todas as regras de design no KiCad devem adotar os **Valores Recomendados**.
-
-| Parâmetro Físico | Limite Absoluto JLCPCB | Valor Recomendado de Projeto | Observações de Engenharia |
+| Parâmetro Físico | Limite JLCPCB | Valor Recomendado | Observações |
 | :--- | :--- | :--- | :--- |
-| **Largura mínima de trilha (Sinais)** | 0.10 mm (4 mil) | **0.15 mm a 0.20 mm** (6 a 8 mil) | Maximiza rendimento e evita sub-corrosão química. |
-| **Largura de trilha (Alimentação lógica < 0.5A)** | 0.10 mm | **0.50 mm** (20 mil) | Baixa queda de tensão e impedância reduzida. |
-| **Largura de trilha (Potência 1.0A a 2.0A)** | - | **1.00 mm a 1.50 mm** (40 a 60 mil) | Conforme cálculo IPC-2152 para $\Delta T \le 10^\circ\text{C}$. |
-| **Espaçamento mínimo (Clearance Cu-Cu)** | 0.10 mm (4 mil) | **0.15 mm** (padrão) / **0.20 mm** (seguro) | Trilha-trilha, trilha-pad e pad-pad. |
-| **Espaçamento Cobre à Borda (Board Edge)** | 0.20 mm | **0.40 mm a 0.50 mm** | Evita exposição do cobre durante corte V-cut / fresa. |
+| **Largura mínima de trilha (Sinais)** | 0.10 mm (4 mil) | **0.15 mm a 0.20 mm** | Maximiza rendimento de corrosão química. |
+| **Largura de trilha (Alimentação lógica < 0.5A)** | 0.10 mm | **0.50 mm** (20 mil) | Baixa impedância e queda de tensão controlada. |
+| **Largura de trilha (Potência 1.0A a 2.0A)** | - | **1.00 mm a 1.50 mm** | Conforme IPC-2152 ($\Delta T \le 10^\circ\text{C}$). |
+| **Espaçamento mínimo (Clearance Cu-Cu)** | 0.10 mm (4 mil) | **0.15 mm** / **0.20 mm** | Trilha-trilha, trilha-pad e pad-pad. |
+| **Espaçamento Cobre à Borda (Board Edge)** | 0.20 mm | **0.40 mm a 0.50 mm** | Previne exposição de cobre no corte/V-cut. |
 | **Furo mínimo de Via (Drill Size)** | 0.15 mm | **0.30 mm** (12 mil) | Broca padrão sem custo adicional de furação fina. |
-| **Diâmetro do Pad da Via (Diameter)** | Drill + 0.26 mm | **0.60 mm** (24 mil) | Garante anel anular seguro de $0.15\text{ mm}$. |
-| **Anel Anular Mínimo (Annular Ring)** | 0.13 mm | **0.15 mm** | Previne rompimento (*breakout*) por tolerância de furação. |
-| **Via de Potência (Individual)** | - | **Drill 0.40 mm / Pad 0.80 mm** | Suporta ~1.5A contínuos por via; usar múltiplas em paralelo. |
-| **Barragem de Máscara (Soldermask Dam)** | 0.08 mm (3.1 mil) | **0.10 mm** | Mínimo entre pads vizinhos para evitar pontes de solda. |
-| **Abertura de Máscara (Mask Clearance)** | 0.00 mm | **0.05 mm** (2 mil) | Expansão de máscara ao redor dos pads de cobre. |
-| **Largura de traço de Silkscreen** | 0.15 mm (6 mil) | **0.15 mm a 0.20 mm** | Evita textos ilegíveis ou borrados na serigrafia. |
-| **Altura mínima de texto de Silkscreen** | 0.80 mm (32 mil) | **1.00 mm a 1.20 mm** | Garante legibilidade clara a olho nu e AOI. |
+| **Diâmetro do Pad da Via (Diameter)** | Drill + 0.26 mm | **0.60 mm** (24 mil) | Garante anel anular de 0.15 mm. |
+| **Anel Anular Mínimo (Annular Ring)** | 0.13 mm | **0.15 mm** | Evita rompimento (*breakout*) por tolerância. |
+| **Via de Potência (Individual)** | - | **Drill 0.40 mm / Pad 0.80 mm** | Suporta ~1.5A contínuos por via; usar em paralelo. |
+| **Barragem de Máscara (Soldermask Dam)** | 0.08 mm (3.1 mil) | **0.10 mm** | Mínimo entre pads vizinhos para evitar pontes. |
+| **Abertura de Máscara (Mask Clearance)** | 0.00 mm | **0.05 mm** (2 mil) | Expansão de máscara ao redor dos pads. |
+| **Largura de traço de Silkscreen** | 0.15 mm (6 mil) | **0.15 mm a 0.20 mm** | Garante nitidez e legibilidade na serigrafia. |
+| **Altura mínima de texto de Silkscreen** | 0.80 mm (32 mil) | **1.00 mm a 1.20 mm** | Leitura clara a olho nu e câmeras AOI. |
 | **Distância Silkscreen para Pad de Solda** | 0.15 mm | **0.20 mm** | Silkscreen NUNCA pode sobrepor cobre estanhado. |
 
 ---
 
-## 2. Configurações Programáticas do KiCad MCP
-
-Para garantir que o modelo e o agente executem as alterações sem erros, utilize diretamente as definições estruturadas abaixo nas ferramentas do KiCad MCP.
+## 2. Configurações Programáticas KiCad MCP
 
 ### 2.1. Regras Gerais de Design (`set_design_rules`)
 ```json
@@ -75,161 +46,36 @@ Para garantir que o modelo e o agente executem as alterações sem erros, utiliz
 ```
 
 ### 2.2. Definições de Net Classes (`create_netclass`)
-As conexões do esquemático e da PCB devem pertencer a uma das seguintes classes padronizadas:
-
 | Nome da Classe | Trilha (`traceWidth`) | Espaçamento (`clearance`) | Furo Via (`viaDrill`) | Diâmetro Via (`viaDiameter`) | Aplicação |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | **`Default`** | 0.20 mm | 0.15 mm | 0.30 mm | 0.60 mm | Sinais digitais gerais, GPIOs, LEDs, barramentos de controle. |
 | **`Power_Low`** | 0.50 mm | 0.20 mm | 0.30 mm | 0.60 mm | Trilhas de alimentação local (+3V3, +5V, VDD) $\le 500\text{ mA}$. |
 | **`Power_High`** | 1.00 mm | 0.25 mm | 0.40 mm | 0.80 mm | Entradas principais de alimentação, barramento de potência, relés. |
-| **`Diff_USB`** | 0.25 mm | 0.18 mm | 0.30 mm | 0.60 mm | Par diferencial USB D+/D- (gap 0.18 mm, $Z_{diff} \approx 90\,\Omega$). |
+| **`Diff_USB`** | 0.25 mm | 0.18 mm | 0.30 mm | 0.60 mm | Par diferencial USB D+/D- ($Z_{diff} \approx 90\,\Omega$). |
 | **`Diff_RS485`** | 0.30 mm | 0.25 mm | 0.30 mm | 0.60 mm | Par diferencial industrial A/B ($Z_{diff} \approx 120\,\Omega$). |
 | **`Analog`** | 0.25 mm | 0.25 mm | 0.30 mm | 0.60 mm | Sinais analógicos de sensores e referências de ADC (baixo ruído). |
 
 ---
 
-## 3. Boas Práticas no Esquemático (KiCad Eeschema)
+## 3. Diretrizes Críticas de Layout e EMC
 
-1. **Modularização por Blocos Funcionais:**
-   - Agrupar os circuitos visualmente em blocos delimitados: **Entrada e Proteção**, **Regulação de Tensão**, **Processamento / MCU**, **Interfaces de Comunicação**, **Acionamentos / Saídas**.
-2. **Alimentação e `PWR_FLAG`:**
-   - Todo trilho de alimentação derivado de conector externo, fusível, regulador LDO ou DC-DC deve receber explicitamente um símbolo `PWR_FLAG` no pino de saída correspondente, eliminando erros do tipo *"Pin connected to other pins, but not driven by any pin"* durante o ERC.
-3. **Pinos Não Utilizados:**
-   - Todo pino intencionalmente deixado sem conexão deve receber o marcador **No Connect** (`add_no_connect`).
-4. **Metadados Obrigatórios nos Componentes:**
-   - Cada símbolo no esquemático deve ter os seguintes campos preenchidos:
-     - `Reference` (ex: `R1`, `C5`, `U2`, `D3`, `J1`).
-     - `Value` (ex: `100nF`, `10k 1%`, `STM32F401CEU6`, `USBLC6-2SC6`).
-     - `Footprint` (footprint padrão oficial do KiCad, ex: `Capacitor_SMD:C_0603_1608Metric`).
-     - `LCSC Part #` (código de componente JLCPCB / LCSC, ex: `C14663`, facilitando SMT PCBA imediata).
-5. **Capacitores de Desacoplamento no Esquemático:**
-   - Devem ser desenhados adjacentes aos pinos de alimentação do respectivo circuito integrado, e não acumulados em um canto isolado da folha, garantindo clareza de projeto.
-
----
-
-## 4. Diretrizes de Layout, Integridade de Sinal (SI) e EMC
-
-### 4.1. Princípio do Caminho de Retorno (Current Return Path)
-- Em sinais de alta velocidade ou bordas rápidas ($t_r < 5\text{ ns}$), o sinal de retorno não segue o caminho de menor resistência ôhmica, mas sim **o caminho de menor indutância de malha**, correndo diretamente sob a trilha no plano de referência adjacente.
-- **Plano de Terra Contínuo (B.Cu):** A camada inferior (`B.Cu`) deve ser mantida prioritariamente como um **plano de terra sólido ininterrupto**.
-- **Proibição de Fendas (*Slot Antennas*):** Nunca passe trilhas compridas na camada `B.Cu` que cortem transversalmente o plano de terra. Se for estritamente necessário rotear em `B.Cu`, utilize segmentos curtos e retorne imediatamente para `F.Cu`.
-
-### 4.2. Capacitores de Desacoplamento (Power Integrity)
-- **Distância Física:** Posicionar os capacitores cerâmicos de 100 nF a **menos de 2.0 mm** dos pinos de alimentação ($V_{DD}$ / $V_{CC}$) dos CIs.
-- **Topologia de Conexão:** Conectar diretamente o pino do CI ao capacitor antes da via de alimentação, ou posicionar a via colada ao pad do capacitor (*flow-through*).
-- **Indutância de Malha:** A via de terra do capacitor deve estar imediatamente ao lado do seu pad de terra, minimizando a área do loop transitório.
-
-### 4.3. Proteção contra Transientes e ESD (TVS Diodes)
-- **Localização:** Diodos TVS e varistores de proteção contra descarga eletrostática (IEC 61000-4-2) devem ser posicionados **imediatamente na entrada do conector externo**.
-- **Roteamento In-Line (*Flow-Through*):** A trilha de sinal vinda do conector DEVE entrar obrigatoriamente no pad do diodo TVS e sair do pad em direção ao circuito interno.
-  - **PROIBIDO:** Criar ramificações em T (*stubs*) para o diodo TVS. O pico de corrente de ESD sobe em menos de 1 ns e a indutância do stub torna o diodo ineficaz.
-- **Terra do TVS:** O pad de terra do diodo TVS deve possuir no mínimo **2 vias de terra** conectando diretamente ao plano de terra para diminuir a indutância transitória ($V = L \cdot di/dt$).
-- **Isolamento Físico:** Nunca roteie trilhas internas protegidas paralelamente às trilhas de entrada desprotegidas antes do TVS, evitando acoplamento capacitivo/indutivo mútuo.
-
-### 4.4. Geometria de Trilhas e Supressão de Ruído
-- **Curvas:** Roteamento a **45°** ou com cantos chanfrados. Proibido o uso de cantos vivos a 90° para evitar armadilhas de corrosão química (*acid traps*) e descontinuidades de impedância.
-- **Regra 3W:** Trilhas de sinais críticos (clocks, PWM, SPI, barramentos de interrupção) devem manter espaçamento mínimo de $3 \times W$ (onde $W$ é a largura da trilha) em relação a outras trilhas para eliminar diafonia (*crosstalk*).
+1. **Plano de Terra Contínuo em `B.Cu`:**
+   - A camada inferior (`B.Cu`) deve ser mantida como plano de terra sólido ininterrupto (`net: "GND"`).
+   - Proibido fendas (*slot antennas*): se for estritamente necessário rotear em `B.Cu`, utilize segmentos curtos e retorne imediatamente para `F.Cu`.
+2. **Capacitores de Desacoplamento:**
+   - Distância máxima de **2.0 mm** dos pinos VDD/VCC do CI com conexão *flow-through* (a alimentação toca o pad do capacitor antes do pino do CI).
+3. **Proteção ESD e TVS:**
+   - Diodos TVS colados no conector de entrada com roteamento *in-line* obrigatório (proibido criar ramificações/stubs) e no mínimo 2 vias de terra.
+4. **Geometria de Trilhas:**
+   - Cantos a **45°**; cantos vivos a 90° são proibidos. Regra 3W aplicada a linhas de clock, PWM e SPI.
+5. **Fiducials e Montagem (DFA):**
+   - 3 fiducials globais (cobre 1.0 mm, máscara 2.0 mm) a $\ge 3.5\text{ mm}$ das bordas.
+   - Furos de fixação M3 (furo 3.2 mm / anel 6.0 mm) nos cantos com folga de 1.5 mm para cabeça de parafuso.
+   - Polaridade nítida no silkscreen: pino 1 em CIs, cátodo em diodos/LEDs, `+` em capacitores polarizados.
 
 ---
 
-## 5. Planos de Cobre, Dissipação Térmica e Vias de Costura
+## 4. Referência Operacional e Resolução de Erros
 
-### 5.1. Planos de Cobre (`add_copper_pour`)
-- **Camada Inferior (`B.Cu`):** Plano de terra contínuo (`net: "GND"`, `padConnection: "thermal"`, `clearance: 0.20`, `minWidth: 0.20`, `priority: 0`).
-- **Camada Superior (`F.Cu`):** Preenchimento de cobre conectado ao terra (`GND`) em todas as áreas não ocupadas por trilhas de sinal e componentes.
-- **Alívio Térmico (*Thermal Relief*):**
-  - Obrigatório em todos os pads de componentes PTH e passivos SMD ligados ao plano de terra para possibilitar a soldagem sem absorção excessiva de calor.
-  - Pads térmicos de CIs (ex: PowerPAD de reguladores, pads inferiores expostos de MOSFETs e QFNs) devem usar conexão **sólida** (`padConnection: "solid"`) com matriz de vias térmicas.
-
-### 5.2. Vias de Costura de Terra (`add_gnd_stitching_vias`)
-A ferramenta do KiCad MCP deve ser configurada e executada com a seguinte estratégia combinada:
-- **Estratégias:** `["grid", "around_refs", "in_zones"]`
-- **Espaçamento da Malha (`spacing`):** `4.0 mm`
-- **Furo (`viaDrill`):** `0.30 mm` / **Diâmetro (`viaSize`):** `0.60 mm`
-- **Margem da Borda (`edgeMargin`):** `0.50 mm`
-- **Densificação (`densifyRefs`):** Incluir os designadores de MCUs, reguladores de comutação (DC-DC) e conectores de entrada para cercar as áreas de ruído com barreira de vias de baixa impedância.
-
----
-
-## 6. Diretrizes de Montagem Automatizada (JLCPCB SMT / DFA)
-
-1. **Fiducials Globais:**
-   - Adicionar **3 fiducials globais** de alinhamento óptico posicionados de forma assimétrica próximos aos cantos da PCB.
-   - Especificação do Pad: Círculo de cobre sólido com diâmetro de `1.0 mm` e abertura de máscara de solda de `2.0 mm`.
-   - Distância da borda da placa: Mínimo de `3.5 mm` para não ser obstruído pelos trilhos de transporte das máquinas pick-and-place.
-2. **Prevenção de Tombstoning em Componentes Passivos (0402 / 0603 / 0805):**
-   - Garantir simetria térmica nos dois pads do componente. Se um pad estiver ligado ao plano de terra, a conexão deve ser feita por alívio térmico (*thermal relief*) ou trilha com largura compatível à trilha do pad oposto.
-3. **Indicação Clara de Polaridade no Silkscreen:**
-   - **CIs e CIs QFN/SOIC:** Marcação visível do Pino 1 (ponto de serigrafia com diâmetro $\ge 0.5\text{ mm}$ ou chanfro).
-   - **Diodos e LEDs:** Linha espessa ou faixa indicando o terminal de **cátodo**.
-   - **Capacitores Eletrolíticos e de Tântalo:** Marcação nítida do polo positivo (`+`).
-   - **Conectores:** Identificação clara de cada pino (ex: `GND`, `VCC`, `TX`, `RX`, `IN`, `OUT`).
-4. **Furos de Fixação (Mounting Holes):**
-   - Utilizar furos padrão M3 (furo `3.2 mm` com anel de cobre estanhado de `6.0 mm`), posicionados nos cantos da placa com folga mínima de `1.5 mm` para a cabeça do parafuso, isolados de trilhas de sinal e interligados ao terra (`GND`) se apropriado para proteção de chassi.
-
----
-
-## 7. Diretrizes Específicas por Subcircuito
-
-### 7.1. Fontes Chaveadas (DC-DC Buck / Boost)
-- **Loop de Alta Corrente ($C_{in} \to SW \to L \to C_{out}$):** Manter o mais compacto possível na mesma camada (`F.Cu`), minimizando a área de espira radiante.
-- **Nó de Chaveamento ($SW$ / $LX$):** Cobre largo para conduzir corrente, porém de menor área possível para diminuir capacitância parasita e emissão de ruído de alta frequência ($dV/dt$).
-- **Trilha de Feedback ($FB$):** Trilha fina e curta, fisicamente isolada do nó de comutação e do indutor. O divisor resistivo deve ficar imediatamente adjacente ao pino FB do CI.
-
-### 7.2. Reguladores Lineares (LDO)
-- **Capacitores de Entrada e Saída:** Conectar imediatamente aos pinos $V_{IN}$ e $V_{OUT}$ com terra ligado ao mesmo ponto de referência.
-- **Dissipação Térmica:** Inserir vias térmicas no pad de terra/exposto conectado ao plano de terra inferior para escoamento de calor.
-
-### 7.3. Osciladores e Cristais (HSE / LSE)
-- **Localização:** Máximo de $5\text{ mm}$ dos pinos do microcontrolador.
-- **Anel de Guarda (*Guard Ring*):** Envolver os pinos do cristal com trilha de terra conectada ao plano por vias.
-- **Isolamento de Camada:** NUNCA passar trilhas de sinal rápido, PWM ou potência embaixo do cristal em qualquer camada.
-
-### 7.4. Barramentos e Entradas Externas
-- **I2C:** Resistores de pull-up (2.2k a 4.7k) próximos ao mestre; sinais SDA/SCL roteados lado a lado.
-- **SPI:** Linha de relógio (SCK) roteada com folga 3W; opcionalmente resistor de amortecimento série (22R a 33R) para evitar *ringing*.
-- **Entradas Digitais / Sensores Externos:** Filtro RC passa-baixa (*hardware debounce*), resistor de pull-up/down e proteção de sobretensão (clamp diode / TVS).
-
----
-
-## 8. Fluxo de Trabalho Automatizado e Validação Incremental (Zero Violações)
-
-Todo o fluxo de desenvolvimento pelo agente e ferramentas de automação deve seguir estritamente o seguinte pipeline:
-
-```
-[Definição de Requisitos]
-          │
-          ▼
-[Desenho do Esquemático] ──► [Executar run_erc] ──► Erros/Avisos? ──► [Corrigir no Esquemático]
-                                    │ (Zero Erros)
-                                    ▼
-                          [Sincronizar com PCB]
-                                    │
-                                    ▼
-[Roteamento & Planos]    ──► [Executar run_drc] ──► Violações?   ──► [Ajustar Trilha/Clearance]
-                                    │ (Zero Violações)
-                                    ▼
-                          [Exportar Gerbers/BOM]
-```
-
-### 8.1. Receita MCP para Esquemático
-1. Adicionar componentes com propriedades completas: `add_schematic_component`, `set_schematic_component_property`.
-2. Conectar pinos e criar labels: `add_schematic_wire`, `add_schematic_net_label`.
-3. Pinos não utilizados recebem `add_no_connect`.
-4. Trilhos de alimentação derivados recebem `PWR_FLAG`.
-5. Validação mandatória: `run_erc` — deve retornar 0 erros e 0 avisos.
-
-### 8.2. Receita MCP para PCB
-1. Sincronizar: `create_board_from_schematic` ou `sync_schematic_to_board`.
-2. Definir contorno e regras: `add_board_outline`, `set_design_rules`, `create_netclass`.
-3. Inserir furos de montagem e fiducials: `add_mounting_hole`.
-4. Posicionamento estratégico: `place_component` respeitando distâncias de desacoplamento (< 2mm).
-5. Roteamento: `route_trace` (45°), `route_differential_pair`.
-6. Planos de cobre: `add_copper_pour` (F.Cu e B.Cu aterrados).
-7. Costura de vias: `add_gnd_stitching_vias`.
-8. Validação mandatória: `run_drc` — deve retornar 0 violações.
-
-### 8.3. Receita MCP para Fabricação
-1. Gerbers e Furações: `export_gerbers`, `export_drill`.
-2. Montagem JLCPCB: `export_pos` (CPL), `export_bom`.
-3. Documentação: `export_sch_pdf`, `export_pcb_pdf`.
+Para instruções passo a passo, fluxo de ferramentas MCP, heurísticas de resolução de erros ERC/DRC e diretrizes específicas por subcircuito (Buck, LDO, Cristais), consulte a skill sob demanda:
+👉 [.agents/skills/kicad10-pcb-designer/SKILL.md](file:///C:/Projetos_PCB/Novo_Projeto/.agents/skills/kicad10-pcb-designer/SKILL.md)
