@@ -18,6 +18,7 @@ Este documento mantém o estado vivo do hardware, decisões técnicas, component
 
 - **Filosofia de Arquitetura (Regra de Ouro):** **Carrier Board Ultracompacta para Módulos COTS**. A placa atua como placa-mãe de interconexão compacta, utilizando barras de pinos (2.54 mm) para encaixe de módulos comerciais pré-montados e bornes a parafuso (KRE) para fiação externa de campo (Ref: [ADR-001](.agents/adr/ADR-001-arquitetura-baseada-em-modulos-cots.md)).
 - **Meta de Fator de Forma:** **Máxima Compacidade Possível**, agrupando os módulos e bornes de forma densa e organizada, sem comprometer a eficiência elétrica (regras IPC-2152 de corrente, isolamento térmico e plano de terra contínuo em `B.Cu`).
+- **Usabilidade e Montagem (Regra de Ouro):** Zoneamento periférico de I/O (Entradas em uma borda, Saídas de potência na borda oposta), parafusos de bornes KRE 100% desobstruídos sem cabos passando sobre módulos, Test Points de bancada acessíveis (GND, trilhos de tensão) e serigrafia explicativa com marcação de Pino 1 (Ref: [ADR-002](.agents/adr/ADR-002-diretrizes-de-ergonomia-zoneamento-e-montagem.md)).
 - **Módulos do Circuito:** *A definir com base na função específica da placa de fechamento.*
 - **Trilhos de Alimentação (Power Rails):** *A definir conforme requisitos dos módulos e atuadores.*
 - **Microcontrolador / Processador:** *A definir.*
@@ -41,6 +42,7 @@ Este documento mantém o estado vivo do hardware, decisões técnicas, component
 ## 5. Preferências e Restrições Registradas pelo Usuário
 - **DFM:** Padrão JLCPCB 2 camadas estrito (traço mín 0.15mm, furo via 0.3mm / pad 0.6mm).
 - **Arquitetura de Módulos Prontos & Alta Compacidade:** Mandatório adotar barras de pinos/soquetes para módulos comerciais pré-montados (COTS), bornes a parafuso para chicotes externos e buscar a máxima compacidade física da PCB, garantindo integridade térmica (IPC-2152) e plano de terra contínuo em `B.Cu`.
+- **Ergonomia e Usabilidade Física:** Bornes voltados para o exterior com acesso livre à chave de fenda, separação física entre entradas de sinal e saídas de potência, inclusão de Test Points acessíveis (GND/Tensões) e serigrafia de alta nitidez com identificação pino a pino e marcação do Pino 1.
 - **Validação:** ERC e DRC com 0 erros/violações mandatórios antes de qualquer commit/avanço.
 - **Voz e Comunicação:** Peer-to-peer técnico, sem subserviência, sem rodeios ou clichês de IA.
 - **Formato BLUF:** Resumo/conclusão na primeira linha, seguido de detalhamento conciso e próximas ações.
