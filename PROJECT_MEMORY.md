@@ -46,9 +46,10 @@ Este documento mantém o estado vivo do hardware, decisões técnicas, component
 - **Voz e Comunicação:** Peer-to-peer técnico, sem subserviência, sem rodeios ou clichês de IA.
 - **Formato BLUF:** Resumo/conclusão na primeira linha, seguido de detalhamento conciso e próximas ações.
 - **Decisões Guiadas:** Apresentação de opções estruturadas em múltipla escolha com `(Recomendado)`.
-- **Autonomia Operacional:** Execução silenciosa de checagens não destrutivas (ERC, DRC, previews) e commits semânticos atômicos.
+- **Autonomia Operacional:** Execução silenciosa de checagens não destrutivas (ERC, DRC, previews), autodiagnóstico via `diagnostico.bat` e commits semânticos atômicos.
+- **Rollback de Segurança:** Rollback automático (`circuit_checkpoint.py --rollback`) caso o ERC/DRC não convirja em 2 tentativas.
 - **Commits em pt-BR:** Todas as mensagens de commit DEVEM ser escritas em português do Brasil (`pt-BR`) no padrão Conventional Commits (`feat(escopo): descrição`). Proibido commits em inglês.
-- **Economia de Tokens:** Diffs pontuais, links clicáveis `file:///...`, supressão de logs de sucesso verbosos e indicação proativa de `/compact`.
+- **Economia de Tokens & Subagentes:** Diffs pontuais, links clicáveis `file:///...`, supressão de logs de sucesso verbosos, subagentes com modelo `flash` para pesquisas de catálogo/datasheet e indicação proativa de `/compact`.
 
 ---
 

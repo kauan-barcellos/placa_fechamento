@@ -37,9 +37,12 @@ Este documento estabelece as diretrizes obrigatórias de interação para este p
 
 ---
 
-## 4. Autonomia em Rotinas e Checkpoints Git em Português (pt-BR)
+## 4. Autonomia em Rotinas, Checkpoints e Rollback em Português (pt-BR)
 
 - **Execução Proativa de Não-Destrutivos:** Verificações de sintaxe, leituras de projeto, execuções de ERC/DRC e geração de previews não devem pedir confirmação prévia; devem ser executadas e reportadas.
+- **Rollback Automático de Segurança:**
+  - Antes de qualquer alteração substancial no esquemático ou PCB, o agente assegura um ponto limpo no Git.
+  - Caso uma edição resulte em erros de ERC ou violações de DRC que não convirjam para 0 após 2 tentativas consecutivas, o agente DEVE executar o rollback automático (`python .agents/scripts/circuit_checkpoint.py --rollback`) para retornar ao último ponto estável e propor uma abordagem alternativa, evitando degradação em cascata.
 - **Commits Obrigatórios em Português do Brasil (pt-BR):**
   - Todas as mensagens de commit DEVEM ser escritas em português do Brasil (`pt-BR`), no padrão Conventional Commits.
   - **Formato:** `<tipo>(<escopo opcional>): <descrição no imperativo em minúsculas e sem ponto final>`
@@ -53,15 +56,23 @@ Este documento estabelece as diretrizes obrigatórias de interação para este p
 
 ---
 
-## 5. Diffs Cirúrgicos e Supressão de Ruído de Ferramentas
+## 5. Diffs Cirúrgicos, Subagentes Leves e Economia de Contexto
 
 - **Zero File Dumping:** Proibido colar arquivos inteiros no chat. Sempre usar links clicáveis com esquema `file:///caminho#Lxx-Lyy` e exibir apenas as linhas efetivamente modificadas.
 - **Supressão de Saídas Verbosas:** Quando comandos de teste ou ferramentas MCP retornarem sucesso com dezenas de linhas de log, resumir em uma linha executiva: `✓ [Nome da Ferramenta] concluído: 0 erros, 0 violações`. Logs longos só são exibidos quando houver erro real a ser corrigido.
+- **Subagentes com Modelo Leve (Padrão Elephant & Goldfish):**
+  - Tarefas mecânicas de alta intensidade de leitura (pesquisar catálogo LCSC/JLCPCB de 513k peças, filtrar datasheets, gerar documentação) devem ser delegadas a subagentes efêmeros configurados com `Model: "flash"`.
+  - O subagente pesquisa e processa os dados em sandbox e devolve para a conversa principal apenas um resumo estruturado de 3 a 5 linhas (código LCSC, valor, footprint, disponibilidade).
+- **Preservação de Prompt Caching:**
+  - Os arquivos de regras e memória devem manter cabeçalhos puramente estáticos. Nunca injetar timestamps ou listas mutáveis no início de arquivos de regras, garantindo taxa máxima de cache de prefixo do LLM.
 
 ---
 
-## 6. Saúde da Sessão e Atalhos de Contexto
+## 6. Saúde da Sessão, Atalhos de Contexto e Autodiagnóstico
 
+- **Autodiagnóstico do Ambiente:** Utilizar `diagnostico.bat` ou `.agents/scripts/check_env.ps1` para validar KiCad CLI 10, venv Python, banco JLCPCB, FreeRouting e Git.
 - **Alerta Proativo de `/compact`:** Quando a contagem de turnos da conversa for elevada e o estado estiver salvo em `PROJECT_MEMORY.md`, o assistente deve sugerir o `/compact` para restabelecer a latência baixa e economia de tokens.
 - **Uso de `/plan`:** Em tarefas compostas com mais de 3 passos, propor ou acionar o modo `/plan` para validação prévia das etapas.
+- **Uso de `/grill-me`:** Em fases de concepção inicial para congelar especificações de circuito de forma interativa.
+- **Uso de `/boost`:** Para análises profundas de compatibilidade eletromagnética (EMC), malhas de alta corrente e integridade de sinal antes de exportar Gerbers.
 - **Uso de `/learn`:** Sempre que o usuário definir uma preferência global (regras de estilo, ferramentas favoritas, padrões da empresa), sugerir o uso de `/learn` para gravá-la no perfil da máquina.
