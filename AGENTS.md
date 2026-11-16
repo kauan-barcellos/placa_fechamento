@@ -10,6 +10,7 @@ Antes de executar qualquer comando ou alteração de circuito:
 1. **Consultar [PROJECT_MEMORY.md](file:///C:/Projetos_PCB/Novo_Projeto/PROJECT_MEMORY.md):** Verificar trilhos de tensão, componentes alocados, pinagem do MCU e decisões prévias.
 2. **Consultar [GEMINI.md](file:///C:/Projetos_PCB/Novo_Projeto/GEMINI.md):** Aplicar regras DFM da JLCPCB (trilhas mínimas de 0.15mm, vias 0.3mm/0.6mm, folgas, net classes).
 3. **Consultar [.agents/skills/kicad10-pcb-designer/SKILL.md](file:///C:/Projetos_PCB/Novo_Projeto/.agents/skills/kicad10-pcb-designer/SKILL.md):** Seguir os procedimentos de ferramentas KiCad MCP (batching, componentes básicos LCSC, roteamento 45°).
+4. **Respeitar Arquitetura Carrier Board (Módulos COTS):** Sempre projetar soquetes/headers para módulos prontos (LM2596, MCP4725, MAX485, etc.), sem desenhar eletrônica discreta desnecessária em volta de chips crus.
 
 ---
 
