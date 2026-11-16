@@ -43,7 +43,11 @@ Este documento mantém o estado vivo do hardware, decisões técnicas, component
 ## 5. Preferências e Restrições Registradas pelo Usuário
 - **DFM:** Padrão JLCPCB 2 camadas estrito (traço mín 0.15mm, furo via 0.3mm / pad 0.6mm).
 - **Validação:** ERC e DRC com 0 erros/violações mandatórios antes de qualquer commit/avanço.
-- **Estilo de Comunicação:** Direto, técnico, focado em decisões de engenharia, sem rodeios ou clichês de IA.
+- **Voz e Comunicação:** Peer-to-peer técnico, sem subserviência, sem rodeios ou clichês de IA.
+- **Formato BLUF:** Resumo/conclusão na primeira linha, seguido de detalhamento conciso e próximas ações.
+- **Decisões Guiadas:** Apresentação de opções estruturadas em múltipla escolha com `(Recomendado)`.
+- **Autonomia Operacional:** Execução silenciosa de checagens não destrutivas (ERC, DRC, previews) e commits semânticos atômicos.
+- **Economia de Tokens:** Diffs pontuais, links clicáveis `file:///...`, supressão de logs de sucesso verbosos e indicação proativa de `/compact`.
 
 ---
 
