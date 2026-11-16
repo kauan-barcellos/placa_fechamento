@@ -47,6 +47,7 @@ Este documento mantém o estado vivo do hardware, decisões técnicas, component
 - **Formato BLUF:** Resumo/conclusão na primeira linha, seguido de detalhamento conciso e próximas ações.
 - **Decisões Guiadas:** Apresentação de opções estruturadas em múltipla escolha com `(Recomendado)`.
 - **Autonomia Operacional:** Execução silenciosa de checagens não destrutivas (ERC, DRC, previews) e commits semânticos atômicos.
+- **Commits em pt-BR:** Todas as mensagens de commit DEVEM ser escritas em português do Brasil (`pt-BR`) no padrão Conventional Commits (`feat(escopo): descrição`). Proibido commits em inglês.
 - **Economia de Tokens:** Diffs pontuais, links clicáveis `file:///...`, supressão de logs de sucesso verbosos e indicação proativa de `/compact`.
 
 ---

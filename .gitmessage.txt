@@ -1,0 +1,18 @@
+# <tipo>(<escopo opcional>): <descrição no imperativo e sem ponto final em pt-BR>
+#
+# Tipos permitidos:
+#   feat:     Nova funcionalidade ou componente adicionado
+#   fix:      Correção de bug, erro de esquemático, DRC ou ERC
+#   docs:     Alterações em documentação (README, PROJECT_MEMORY, etc.)
+#   style:    Ajustes cosméticos, alinhamento visual no esquemático/PCB
+#   refactor: Refatoração de circuito ou código sem alteração funcional
+#   perf:     Melhoria de desempenho, roteamento otimizado, redução de ruído
+#   test:     Validações de DRC/ERC, testes de fabricação, simulações
+#   build:    Alterações em dependências, scripts ou ambiente de build
+#   ci:       Alterações em scripts de integração, hooks ou automações
+#   chore:    Tarefas de manutenção geral, gitignore, configurações
+#
+# Exemplos em pt-BR:
+#   feat(fonte): adicionar regulador LDO 3.3V com capacitores de desacoplamento
+#   fix(drc): eliminar folga insuficiente entre trilhas de alimentacao
+#   docs(memoria): atualizar mapeamento de pinos do microcontrolador

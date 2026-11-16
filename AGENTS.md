@@ -24,3 +24,4 @@ Antes de executar qualquer comando ou alteração de circuito:
 
 - Atualizar imediatamente [PROJECT_MEMORY.md](file:///C:/Projetos_PCB/Novo_Projeto/PROJECT_MEMORY.md) com novos componentes, pinagens ou regras criadas.
 - Executar autonomamente `run_erc` (esquemático) ou `run_drc` (PCB) e corrigir todos os erros antes de concluir o turno.
+- **Commits Git em pt-BR:** Toda mensagem de commit DEVE obrigatoriamente seguir o padrão Conventional Commits em português do Brasil (`<tipo>(<escopo>): <descrição em pt-BR>`). Proibido commits em inglês.

@@ -37,10 +37,19 @@ Este documento estabelece as diretrizes obrigatórias de interação para este p
 
 ---
 
-## 4. Autonomia em Rotinas e Checkpoints Git
+## 4. Autonomia em Rotinas e Checkpoints Git em Português (pt-BR)
 
 - **Execução Proativa de Não-Destrutivos:** Verificações de sintaxe, leituras de projeto, execuções de ERC/DRC e geração de previews não devem pedir confirmação prévia; devem ser executadas e reportadas.
-- **Commits Atômicos Semânticos:** A cada bloco funcional concluído e testado com sucesso, realizar commit com mensagem semântica padronizada (`feat:`, `fix:`, `refactor:`, `docs:`).
+- **Commits Obrigatórios em Português do Brasil (pt-BR):**
+  - Todas as mensagens de commit DEVEM ser escritas em português do Brasil (`pt-BR`), no padrão Conventional Commits.
+  - **Formato:** `<tipo>(<escopo opcional>): <descrição no imperativo em minúsculas e sem ponto final>`
+  - **Tipos permitidos:** `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`.
+  - **Exemplos válidos:**
+    - `feat(esquematico): adicionar regulador LDO 3.3V com capacitores de desacoplamento`
+    - `fix(drc): corrigir folga insuficiente entre trilhas de alimentacao`
+    - `docs(memoria): registrar pinout atualizado do microcontrolador`
+    - `chore(config): configurar template de commit em pt-BR`
+  - **Proibição estrita:** É terminantemente proibido criar commits em inglês (ex: `feat: add regulator`, `fix: update pins`) ou com mensagens genéricas.
 
 ---
 
