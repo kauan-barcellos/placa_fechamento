@@ -50,6 +50,7 @@ Este documento mantém o estado vivo do hardware, decisões técnicas, component
 - **Rollback de Segurança:** Rollback automático (`circuit_checkpoint.py --rollback`) caso o ERC/DRC não convirja em 2 tentativas.
 - **Commits em pt-BR:** Todas as mensagens de commit DEVEM ser escritas em português do Brasil (`pt-BR`) no padrão Conventional Commits (`feat(escopo): descrição`). Proibido commits em inglês.
 - **Economia de Tokens & Subagentes:** Diffs pontuais, links clicáveis `file:///...`, supressão de logs de sucesso verbosos, subagentes com modelo `flash` para pesquisas de catálogo/datasheet, GEMINI.md enxuto (5.2 KB) e indicação proativa de `/compact`.
+- **Tema Visual e IDE:** Preset Catppuccin Mocha com ícones Catppuccin, tipografia Cascadia Code com ligaduras (`fontLigatures: true`), cursor suave e diffs visuais aprimorados em tons pastel.
 
 ---
 
