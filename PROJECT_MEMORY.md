@@ -70,3 +70,10 @@ Este documento mantém o estado vivo do hardware, decisões técnicas, component
 8. `git-hygiene-and-secrets`: Filtragem de arquivos temporários do KiCad e proteção contra vazamento de chaves.
 9. `agent-memory`: Padrão de memória persistente viva para hardware.
 10. `token-optimization`: Técnicas de economia de contexto e supressão de ruído de ferramentas.
+11. `project-architect`: Planejamento arquitetural formal e engenharia guiada por especificação (SPEC.md).
+12. `systematic-code-reviewer`: Auto-auditoria crítica adversarial de código, diffs e casos de borda.
+13. `tdd-cycle-orchestrator`: Ciclo estrito Red-Green-Refactor com testes automatizados de comportamento.
+14. `task-decomposition-and-tracking`: Decomposição atômica de tarefas e checklist vivo persistente.
+15. `shell-safety-and-guardrails`: Execução determinística não-interativa e timeouts obrigatórios no terminal.
+16. `secret-sanitizer-and-privacy`: Mascaramento em tempo de execução de chaves de API, senhas e tokens.
+17. `subagent-orchestrator-mapreduce`: Delegação paralela leve (flash) e agregação sem poluição de contexto.
